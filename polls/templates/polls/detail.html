@@ -10,12 +10,23 @@
 <body>
 
     <div class="container pt-5">
-        <h1>{{ question.question_text }}</h1>
-        <ul>
-        {% for choice in question.choice_set.all %}
-            <li>{{ choice.choice_text }}</li>
-        {% endfor %}
-        </ul>
+        {% if error_message %}<div class="alert alert-danger"><strong>{{ error_message }}</strong></div>{% endif %}
+        
+        <h1>{{ question.question_text }}</h1>        
+
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {% for choice in question.choice_set.all %}
+                    <div class="custom-control custom-radio">
+                        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" class="custom-control-input">
+                        <label for="choice{{ forloop.counter }}" class="custom-control-label">{{ choice.choice_text }}</label><br>
+                    </div>
+                {% endfor %}
+            </div>
+            <input type="submit" value="Vote" class="btn btn-primary">
+        </form>
+
     </div>
 </body>
 </html>
